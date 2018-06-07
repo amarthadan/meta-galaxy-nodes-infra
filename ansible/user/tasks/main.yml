@@ -1,0 +1,16 @@
+---
+- name: Create 'galaxy' group
+  group:
+    name: galaxy
+    gid: 2001
+    state: present
+
+- name: Create 'galaxy' user
+  user:
+    name: galaxy
+    group: galaxy
+    uid: 2001
+    state: present
+    shell: /bin/bash
+    home: /var/spool/galaxy
+    create_home: yes

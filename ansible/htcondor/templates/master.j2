@@ -1,0 +1,15 @@
+CONDOR_HOST = {{ condor_master_ip }}
+ALLOW_WRITE = {{ condor_master_ip }}{% for i in range(private_network_size|int) %}, {{ ((private_network_start_ip | ipaddr('int')) + i) | ipaddr }}{%- endfor %}
+ALLOW_READ = $(ALLOW_WRITE)
+ALLOW_NEGOTIATOR = $(ALLOW_WRITE)
+DAEMON_LIST = COLLECTOR, MASTER, NEGOTIATOR, SCHEDD
+FILESYSTEM_DOMAIN = ics.muni.cz
+UID_DOMAIN = ics.muni.cz
+TRUST_UID_DOMAIN = True
+SOFT_UID_DOMAIN = True
+HOSTALLOW_WRITE = $(ALLOW_WRITE)
+HOSTALLOW_READ = $(ALLOW_READ)
+HOSTALLOW_WRITE_COLLECTOR = $(HOSTALLOW_WRITE)
+HOSTALLOW_WRITE_STARTD    = $(HOSTALLOW_WRITE)
+HOSTALLOW_READ_COLLECTOR  = $(HOSTALLOW_READ)
+HOSTALLOW_READ_STARTD     = $(HOSTALLOW_READ)

@@ -1,0 +1,13 @@
+---
+- name: Create NFS mountpoint
+  file:
+    name: /mnt/nfs
+    state: directory
+
+- name: Mount NFS directory
+  mount:
+    path: /mnt/nfs
+    fstype: nfs
+    state: mounted
+    src: "{{ nfs_server_ip }}:/nfs"
+    opts: noatime,nodiratime

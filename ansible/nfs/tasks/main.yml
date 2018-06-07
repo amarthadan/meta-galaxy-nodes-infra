@@ -1,0 +1,13 @@
+---
+- name: Install NFS packages
+  yum:
+    name: nfs-utils
+    state: present
+
+- name: Import NFS server tasks
+  import_tasks: server.yml
+  when: node_type == "nfs"
+
+- name: Import NFS client tasks
+  import_tasks: client.yml
+  when: node_type != "nfs"

@@ -1,0 +1,23 @@
+---
+- name: Chown NFS shared directory to Galaxy user
+  file:
+    name: /nfs
+    owner: galaxy
+    group: galaxy
+    state: directory
+
+- name: NFS export file
+  template:
+    src: exports.j2
+    dest: /etc/exports
+
+- name: Ensure NFS services are enabled + started
+  service:
+    name: "{{ item }}"
+    enabled: yes
+    state: started
+  with_items:
+    - rpcbind
+    - nfs-server
+    - nfs-lock
+    - nfs-idmap

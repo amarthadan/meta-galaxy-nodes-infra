@@ -1,0 +1,18 @@
+ETC = /etc/condor
+CONDOR_HOST = {{ condor_master_ip }}
+ALLOW_WRITE = {{ condor_master_ip }}{% for i in range(private_network_size|int) %}, {{ ((private_network_start_ip | ipaddr('int')) + i) | ipaddr }}{%- endfor %}
+ALLOW_READ = $(ALLOW_WRITE)
+ALLOW_CLIENT = *
+DAEMON_LIST = MASTER, SCHEDD, STARTD
+FILESYSTEM_DOMAIN = ics.muni.cz
+UID_DOMAIN = ics.muni.cz
+TRUST_UID_DOMAIN = True
+SOFT_UID_DOMAIN = True
+# run with partitionable slots
+CLAIM_PARTITIONABLE_LEFTOVERS = True
+NUM_SLOTS = 1
+NUM_SLOTS_TYPE_1 = 1
+SLOT_TYPE_1 = 100%
+SLOT_TYPE_1_PARTITIONABLE = True
+ALLOW_PSLOT_PREEMPTION = False
+STARTD.PROPORTIONAL_SWAP_ASSIGNMENT = True

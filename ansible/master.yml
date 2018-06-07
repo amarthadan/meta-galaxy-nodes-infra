@@ -1,0 +1,9 @@
+---
+- hosts: all
+  roles:
+    - networking
+    - basic
+    - user
+    - nfs
+    - htcondor
+    - pulsar

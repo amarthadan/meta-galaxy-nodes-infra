@@ -1,0 +1,1 @@
+/nfs    {% for i in range(private_network_size|int) %} {{ ((private_network_start_ip | ipaddr('int')) + i) | ipaddr }}(rw,sync,no_root_squash,no_all_squash) {%- endfor %}

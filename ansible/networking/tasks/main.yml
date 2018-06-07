@@ -1,0 +1,11 @@
+---
+- name: Second ethernet configuration
+  copy:
+    dest: /etc/sysconfig/network-scripts/ifcfg-eth1
+    src:  ifcfg-eth1
+    mode: 0644
+
+- name: Restart networking
+  systemd:
+    name: network
+    state: restarted

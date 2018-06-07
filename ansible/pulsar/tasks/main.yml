@@ -1,0 +1,91 @@
+---
+- name: Install dependencies
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - python34
+    - python-devel
+    - python-pip
+    - gcc
+
+- name: Install python dependencies
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - pip
+    - virtualenv
+
+- name: Create Pulsar directory
+  file:
+    name: /opt/pulsar
+    state: directory
+    owner: galaxy
+    group: galaxy
+
+- name: Install Pulsar
+  pip:
+    name: "{{ item }}"
+    virtualenv: /opt/pulsar/venv
+    chdir: /opt/pulsar
+  become: yes
+  become_user: galaxy
+  with_items:
+    - pulsar-app
+    - kombu
+    - poster
+    - drmaa
+
+- name: Create Pulsar certificates directory
+  file:
+    name: /opt/pulsar/certs
+    state: directory
+    owner: galaxy
+    group: galaxy
+
+- name: Pulsar SSL key + certificate
+  copy:
+    src: "{{ item }}"
+    dest: /opt/pulsar/certs/
+    owner: galaxy
+    group: galaxy
+  with_items:
+    - galaxy-cert.pem
+    - galaxy-key.pem
+
+- name: Pulsar app.yml configuration file
+  template:
+    src: app.yml.j2
+    dest: /opt/pulsar/app.yml
+    owner: galaxy
+    group: galaxy
+
+- name: Pulsar dependency resolvers configuration file
+  copy:
+    src: dependency_resolvers_conf.xml
+    dest: /opt/pulsar/dependency_resolvers_conf.xml
+    owner: galaxy
+    group: galaxy
+
+- name: Pulsar local_env.sh configuration file
+  copy:
+    src: local_env.sh
+    dest: /opt/pulsar/local_env.sh
+    owner: galaxy
+    group: galaxy
+
+- name: Pulsar server.ini configuration file
+  template:
+    src: server.ini.j2
+    dest: /opt/pulsar/server.ini
+    owner: galaxy
+    group: galaxy
+
+- name: Run Pulsar
+  shell: source venv/bin/activate && pulsar --daemon
+  args:
+    chdir: /opt/pulsar
+    executable: /bin/bash
+  become: yes
+  become_user: galaxy

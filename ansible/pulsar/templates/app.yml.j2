@@ -4,7 +4,7 @@ conda_auto_init : True
 conda_auto_install : True
 staging_directory: /mnt/nfs/galaxy-staging/
 tool_dependency_dir: /mnt/nfs/galaxy-tools/
-message_queue_url: {{ pulsar_message_queue_url }}
+message_queue_url: amqp://{{ rabbitmq_galaxy_user_name }}:{{ rabbitmq_galaxy_user_password }}@127.0.0.1:5672/{{ rabbitmq_galaxy_vhost }}
 amqp_acknowledge: True
 # amqp_connect_ssl_ca_certs: /opt/pulsar/certs/galaxy-cert.pem
 # amqp_connect_ssl_keyfile: /opt/pulsar/certs/galaxy-key.pem

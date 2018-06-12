@@ -1,6 +1,8 @@
 ETC = /etc/condor
 CONDOR_HOST = {{ condor_master_ip }}
-ALLOW_WRITE = {{ condor_master_ip }}{% for i in range(private_network_size|int) %}, {{ ((private_network_start_ip | ipaddr('int')) + i) | ipaddr }}{%- endfor %}
+ALLOW_WRITE = 127.0.0.1{% for i in range(public_network_size|int) %}, {{ ((public_network_start_ip | ipaddr('int')) + i) | ipaddr }}
+{%- endfor %}
+
 ALLOW_READ = $(ALLOW_WRITE)
 ALLOW_CLIENT = *
 DAEMON_LIST = MASTER, SCHEDD, STARTD

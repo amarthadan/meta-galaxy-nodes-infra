@@ -1,0 +1,78 @@
+---
+- name: Install dependencies
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - pygpgme
+    - yum-utils
+
+- name: Import repository key
+  rpm_key:
+    key: http://www.rabbitmq.com/rabbitmq-release-signing-key.asc
+    state: present
+
+- name: Erlang repo file
+  copy:
+    dest: /etc/yum.repos.d/rabbitmq_erlang.repo
+    src: rabbitmq_erlang.repo
+
+- name: Install Erlang
+  yum:
+    name: erlang
+
+- name: RabbitMQ repo file
+  copy:
+    dest: /etc/yum.repos.d/rabbitmq_rabbitmq-server.repo
+    src: rabbitmq_rabbitmq-server.repo
+
+- name: Install RabbitMQ
+  yum:
+    name: rabbitmq-server
+
+- name: RabbitMQ service enable
+  service:
+    name: rabbitmq-server
+    enabled: yes
+    state: started
+
+- name: Remove defualt RabbitMQ user
+  rabbitmq_user:
+    user: guest
+    state: absent
+
+- name: Add Galaxy RabbitMQ vhost
+  rabbitmq_vhost:
+    name: "{{ rabbitmq_galaxy_vhost }}"
+    state: present
+
+- name: Add Galaxy RabbitMQ user
+  rabbitmq_user:
+    user: "{{ rabbitmq_galaxy_user_name }}"
+    password: "{{ rabbitmq_galaxy_user_password }}"
+    vhost: "{{ rabbitmq_galaxy_vhost }}"
+    configure_priv: pulsar
+    read_priv: pulsar
+    write_priv: pulsar
+    state: present
+
+- name: Add admin RabbitMQ user
+  rabbitmq_user:
+    user: "{{ rabbitmq_admin_user_name }}"
+    password: "{{ rabbitmq_admin_user_password }}"
+    tags: administrator
+    permissions:
+      - vhost: /
+        configure_priv: .*
+        read_priv: .*
+        write_priv: .*
+      - vhost: "{{ rabbitmq_galaxy_vhost }}"
+        configure_priv: .*
+        read_priv: .*
+        write_priv: .*
+    state: present
+
+- name: Enable RabbitMQ management plugin
+  rabbitmq_plugin:
+    names: rabbitmq_management
+    state: enabled

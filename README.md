@@ -13,7 +13,10 @@ one = {
   password = "password"
 }
 
-pulsar_message_queue_url = "amqp://user:password@some.queue.somewhere:5672//"
+rabbitmq_galaxy_user_name = "galaxy-user"
+rabbitmq_galaxy_user_password = "galaxy-user-password"
+rabbitmq_admin_user_name = "admin-user"
+rabbitmq_admin_user_password = "admin-user-password"
 ```
 3. Edit `variables.tf` to your liking.
 4. Unlock your SSH keyring, for example `ssh-add ~/.ssh/id_rsa`.
